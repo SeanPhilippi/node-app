@@ -1,4 +1,5 @@
 const http = require('http'); // importing a core node module, Node ships with this
+const filesys = require('fs');
 
 // anon callback func given to createServer
 // this is called whenever an incoming request is detected
@@ -6,7 +7,42 @@ const http = require('http'); // importing a core node module, Node ships with t
 // requests at port 3003, once it gets a req (visiting that port), it will log the req object
 // this event loop continues as long as event listeners are registered
 const server = http.createServer((req, res) => {
-  console.log(req.url, req.method, req.headers);
+  const url = req.url;
+  const method = req.method;
+  if (url === '/') {
+    res.write('<html>')
+    res.write('<head><title>Enter Message</title></head>');
+    res.write(`
+      <body>
+        <form action="/message" method="POST">
+          <input type="text" name="secret message" />
+          <button type="submit">
+            Send
+          </button>
+        </form>
+      </body>
+    `);
+    res.write('</html>');
+    // return so the callback function ends and doesn't try to call for methods off res after res.end() was already called
+    return res.end();
+  }
+  if (url === '/message' && method === 'POST') {
+    const body = [];
+    req.on('data', (dataChunk) => {
+      req.on('data', (dataChunk) => {
+        body.push();
+      });
+      req.on('end', () => {
+        const parsedBody = Buffer.concat(body).toString();
+        console.log(parsedBody);
+      })
+    });
+    filesys.writeFileSync('secret-message.txt', 'cellar door (dummy text)');
+    res.writeHead(302, { 'Location': '/' });
+    // res.statusCode = 302;
+    // res.setHeader('Content-Type', 'text/html')
+    return res.end();
+  }
   // allows ending of your running app once the req and logging of the req obj happens
   // normally you wouldn't want to quit your server, since people wouldn't be able to access your site anymore
   // process.exit();
