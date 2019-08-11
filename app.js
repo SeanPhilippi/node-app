@@ -29,15 +29,14 @@ const server = http.createServer((req, res) => {
   if (url === '/message' && method === 'POST') {
     const body = [];
     req.on('data', (dataChunk) => {
-      req.on('data', (dataChunk) => {
-        body.push();
-      });
-      req.on('end', () => {
-        const parsedBody = Buffer.concat(body).toString();
-        console.log(parsedBody);
-      })
+      console.log('chunk', dataChunk);
+      body.push(dataChunk);
     });
-    filesys.writeFileSync('secret-message.txt', 'cellar door (dummy text)');
+    req.on('end', () => {
+      const parsedBody = Buffer.concat(body).toString();
+      const message = parsedBody.split('=')[1];
+      filesys.writeFileSync('secret-message.txt', message);
+    })
     res.writeHead(302, { 'Location': '/' });
     // res.statusCode = 302;
     // res.setHeader('Content-Type', 'text/html')
@@ -53,4 +52,4 @@ const server = http.createServer((req, res) => {
   res.end();
 });
 
-server.listen(3003);
+server.listen(3003, () => console.log('listening on 3003'));
