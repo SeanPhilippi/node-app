@@ -16,6 +16,16 @@ const reqHandler = (req, res) => {
             <p>
               Welcome!
             </p>
+            <p>
+              Check out my form below!
+            </p>
+            <form action="/create-user" method="POST">
+              <label htmlFor="create-user">Enter Username:</label><br>
+              <input type="text" name="create-user"/>
+              <button type-"submit>
+                Submit
+              </button>
+            </form>
           </div>
         </body>
       </html>
@@ -23,7 +33,6 @@ const reqHandler = (req, res) => {
   };
 
   if (url === '/users') {
-
     const users = [
       {
         username: 'Sean',
@@ -31,13 +40,14 @@ const reqHandler = (req, res) => {
       },
       {
         username: 'Ken',
-        id: 1
+        id: 2
       },
       {
         username: 'Jess',
-        id: 1
+        id: 3
       },
-    ]
+    ];
+
     res.write(`
       <!DOCTYPE html>
       <html lang="en">
@@ -65,6 +75,18 @@ const reqHandler = (req, res) => {
         </body>
       </html>
     `)
+  };
+
+  if (url === '/create-user' && method === 'POST') {
+    const body = [];
+    req.on('data', (chunk) => {
+      body.push(chunk);
+    });
+    return req.on('end', () => {
+      const parsedBody = Buffer.concat(body).toString();
+      const logMessage = parsedBody.split('=')[1];
+      console.log('username from form req data', logMessage);
+    });
   }
 };
 
