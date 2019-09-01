@@ -18,6 +18,7 @@ const reqHandler = (req, res) => {
   ];
 
   if (url === '/') {
+    res.setHeader('Content-Type', 'text/html');
     res.write(`
       <!DOCTYPE html>
       <html lang="en">
@@ -45,10 +46,12 @@ const reqHandler = (req, res) => {
           </div>
         </body>
       </html>
-    `)
+    `);
+    return res.end();
   };
 
   if (url === '/users') {
+    res.setHeader('Content-Type', 'text/html');
     res.write(`
       <!DOCTYPE html>
       <html lang="en">
@@ -75,7 +78,8 @@ const reqHandler = (req, res) => {
           </ul>
         </body>
       </html>
-    `)
+    `);
+    return res.end();
   };
 
   if (url === '/create-user' && method === 'POST') {
@@ -84,17 +88,20 @@ const reqHandler = (req, res) => {
     req.on('data', (chunk) => {
       body.push(chunk);
     });
-    return req.on('end', () => {
+    req.on('end', () => {
       const parsedBody = Buffer.concat(body).toString();
-      const username = parsedBody.split('=')[1];
+      const username = parsedBody.split('=')[1].replace(/[+]/g, ' ');
       console.log('username from form req data', username);
       const newUser = {
-        name: username,
+        username: username,
         id: users[users.length - 1] ? users[users.length - 1].id : id
       };
       users.push(newUser);
       console.log(users)
     });
+    res.statusCode = 302;
+    res.setHeader('Location', '/');
+    res.end();
   }
 };
 
