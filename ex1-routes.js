@@ -1,6 +1,22 @@
 const reqHandler = (req, res) => {
   const url = req.url;
   const method = req.method;
+
+  let users = [
+    // {
+    //   username: 'Sean',
+    //   id: 1
+    // },
+    // {
+    //   username: 'Ken',
+    //   id: 2
+    // },
+    // {
+    //   username: 'Jess',
+    //   id: 3
+    // },
+  ];
+
   if (url === '/') {
     res.write(`
       <!DOCTYPE html>
@@ -33,21 +49,6 @@ const reqHandler = (req, res) => {
   };
 
   if (url === '/users') {
-    const users = [
-      {
-        username: 'Sean',
-        id: 1
-      },
-      {
-        username: 'Ken',
-        id: 2
-      },
-      {
-        username: 'Jess',
-        id: 3
-      },
-    ];
-
     res.write(`
       <!DOCTYPE html>
       <html lang="en">
@@ -78,14 +79,21 @@ const reqHandler = (req, res) => {
   };
 
   if (url === '/create-user' && method === 'POST') {
+    let id = 1;
     const body = [];
     req.on('data', (chunk) => {
       body.push(chunk);
     });
     return req.on('end', () => {
       const parsedBody = Buffer.concat(body).toString();
-      const logMessage = parsedBody.split('=')[1];
-      console.log('username from form req data', logMessage);
+      const username = parsedBody.split('=')[1];
+      console.log('username from form req data', username);
+      const newUser = {
+        name: username,
+        id: users[users.length - 1] ? users[users.length - 1].id : id
+      };
+      users.push(newUser);
+      console.log(users)
     });
   }
 };
