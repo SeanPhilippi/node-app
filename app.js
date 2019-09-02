@@ -8,8 +8,12 @@ const bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(adminRoutes);
-app.use(shopRoutes);
+app.use('/admin', adminRoutes);
+app.use('/shop', shopRoutes);
+
+app.use((req, res, next) => {
+  res.status(404).send('<h1>Page not found</h1>');
+})
 
 app.listen(3003, () => console.log('listening on 3003 with express :)'));
 

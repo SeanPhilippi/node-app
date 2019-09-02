@@ -1,8 +1,10 @@
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
-  res.send(`<h1>Hello from Express!</h1>`);
+  // path.join() is used vs concat because it detects the operating system the app is running on and adjusts for '/' or '\'
+  res.sendFile(path.join(__dirname, '../', 'views', 'shop.html'));
 });
 
 module.exports = router;
