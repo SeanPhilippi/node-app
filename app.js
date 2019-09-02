@@ -1,10 +1,25 @@
-const http = require('http'); // importing a core node module, Node ships with this
-const routes = require('./routes');
-// anon callback func given to createServer
-// this is called whenever an incoming request is detected
-// this request listener callback function will keep an event loop going listening for incoming
-// requests at port 3003, once it gets a req (visiting that port), it will log the req object
-// this event loop continues as long as event listeners are registered
-const server = http.createServer(routes);
+const express = require('express');
+const app = express();
 
-server.listen(3003, () => console.log('listening on 3003'));
+app.use('/', (req, res, next) => {
+  console.log('this always runs!');
+  next();
+});
+
+app.use('/add-product', (req, res, next) => {
+  console.log('In another middleware!');
+  res.send(`<h1>The "Add Product" Page</h1>`);
+});
+
+app.use('/', (req, res, next) => {
+  console.log('In another middleware!');
+  // express send method sets header and allows writing with any data type
+  res.send(`<h1>Hello from Express!</h1>`);
+  next();
+});
+
+// const server = http.createServer(app);
+// server.listen(3003, () => console.log('listening on 3003'));
+// express shortcut for doing all of the above
+app.listen(3003, () => console.log('listening on 3003 with express :)'));
+
