@@ -11,7 +11,7 @@ router.get('/', (req, res, next) => {
   // path.join() is used vs concat because it detects the operating system the app is running on and adjusts for '/' or '\'
   // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
   // now using pugfile since view engine in app is set to pug
-  res.render('shop', { products: products, docTitle: 'Shop', path: '/' });
+  res.render('shop', { products: products, pageTitle: 'Shop', path: '/', hasProducts: products.length > 0 });
 });
 
 module.exports = router;
