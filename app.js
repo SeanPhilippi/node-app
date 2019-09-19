@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const errorController = require('./controllers/error');
 // 'view engine' is a reserved express key, you set it to a templating or view engine. ejs and pug come
 // with express and don't need to be imported, unlike express-handlebars
 app.set('view engine', 'ejs');
@@ -18,10 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-app.use((req, res, next) => {
-  // res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
-  res.status(404).render('404', { pageTitle: 'Page Not Found', path: '' });
-});
+app.use(errorController.get404);
 
 app.listen(3003, () => console.log('listening on 3003 with express :)'));
 
