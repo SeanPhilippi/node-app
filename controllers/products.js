@@ -1,4 +1,4 @@
-const products = [];
+const Product = require('../models/product');
 
 exports.getAddProduct = (req, res) => {
   console.log('In another middleware!');
@@ -13,11 +13,13 @@ exports.getAddProduct = (req, res) => {
 };
 
 exports.postAddProduct = (req, res) => {
-  products.push({ title: req.body.title });
+  const product = new Product(req.body.title);
+  product.save();
   res.redirect('/');
 }
 
 exports.getProducts = (req, res) => {
+  const products = Product.fetchAll();
   // path.join() is used vs concat because it detects the operating system the app is running on and adjusts for '/' or '\'
   // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
   // now using pugfile since view engine in app is set to pug
