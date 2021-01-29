@@ -19,16 +19,14 @@ exports.postAddProduct = (req, res) => {
 }
 
 exports.getProducts = (req, res) => {
-  const products = Product.fetchAll();
-  // path.join() is used vs concat because it detects the operating system the app is running on and adjusts for '/' or '\'
-  // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
-  // now using pugfile since view engine in app is set to pug
-  res.render('shop', {
-    products: products,
-    pageTitle: 'Shop',
-    path: '/',
-    hasProducts: products.length > 0,
-    activeShop: true,
-    productCSS: true
+  Product.fetchAll(products => {
+    res.render('shop', {
+      products: products,
+      pageTitle: 'Shop',
+      path: '/',
+      hasProducts: products.length > 0,
+      activeShop: true,
+      productCSS: true
+    });
   });
 }
