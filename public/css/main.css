@@ -43,3 +43,8 @@ main {
 .main-header__item a.active {
   color: blue;
 }
+
+.card__image img {
+  width: 100px;
+  height: 100px;
+}
