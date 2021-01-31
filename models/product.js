@@ -2,6 +2,17 @@ const fs = require('fs');
 const path = require('path');
 
 const products = [];
+const prods = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+
+const getProductsFromFile = callback => {
+    fs.readFile(prods, (err, fileContent) => {
+      if (err) {
+        callback([]);
+      } else {
+        callback(JSON.parse(fileContent));
+      }
+    });
+};
 
 module.exports = class Product {
   constructor(title) {
@@ -9,30 +20,16 @@ module.exports = class Product {
   }
 
   save() {
-    const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
-    fs.readFile(p, (err, fileContent) => {
-      let products = [];
-      if (!err) {
-        products = JSON.parse(fileContent);
-      }
-
+    getProductsFromFile(products => {
       products.push(this);
-      fs.writeFile(p, JSON.stringify(products), err => {
-        console.log(err)
+      fs.readFile(prods, JSON.stringify(products), err => {
+        console.log(err);
       });
     });
   }
   // static keyword allows you to call fetchAll directly off the Product class itself,
   // vs an instantiated object created with the Product class.
   static fetchAll(callback) {
-    const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
-    fs.readFile(p, (err, fileContent) => {
-      if (err) {
-        callback([]);
-      }
-      // fileContent is returned as text, so it has to be parsed into json
-      callback(JSON.parse(fileContent));
-    })
-    return products;
+    getProductsFromFile(callback);
   }
 }
